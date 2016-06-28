@@ -1,9 +1,9 @@
 (ns clj-detector.core
   (:import [net.sf.uadetector.service UADetectorServiceFactory]
-           [net.sf.uadetector UserAgent UserAgentType VersionNumber DeviceCategory ReadableDeviceCategory$Category])
+           [net.sf.uadetector UserAgent UserAgentType UserAgentFamily VersionNumber DeviceCategory ReadableDeviceCategory$Category OperatingSystemFamily])
   (:require [clojure.string :as st]))
 
-(defrecord Agent [name producer type version device])
+(defrecord Agent [name producer family type version device os-family os-name os-version])
 
 (defprotocol ToClojure
   (to-clojure [x]))
@@ -31,11 +31,17 @@
     (st/join "." (remove st/blank? (.getGroups version))))
   UserAgent
   (to-clojure [agent]
-    (Agent. (.getName agent)
-            (.getProducer agent)
-            (to-clojure (.getType agent))
-            (to-clojure (.getVersionNumber agent))
-            (to-clojure (.getDeviceCategory agent))))
+    #_[name producer family type version device os-family os-name os-version]
+    (let [os (.getOperatingSystem agent)]
+      (Agent. (.getName agent)
+              (.getProducer agent)
+              (to-clojure (.getFamily agent))
+              (to-clojure (.getType agent))
+              (to-clojure (.getVersionNumber agent))
+              (to-clojure (.getDeviceCategory agent))
+              (to-clojure (.getFamily os))
+              (.getName os)
+              (to-clojure (.getVersionNumber os)))))
   UserAgentType
   (to-clojure [type]
     (condp = type
@@ -51,4 +57,8 @@
       (UserAgentType/UNKNOWN) :unknown
       (UserAgentType/USERAGENT_ANONYMIZER) :anonymizer
       (UserAgentType/VALIDATOR) :validator
-      (UserAgentType/WAP_BROWSER) :wap-browser)))
+      (UserAgentType/WAP_BROWSER) :wap-browser))
+  UserAgentFamily
+  (to-clojure [family] (.toString family))
+  OperatingSystemFamily
+  (to-clojure [family] (.toString family)))

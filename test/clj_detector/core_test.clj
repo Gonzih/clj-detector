@@ -9,4 +9,7 @@
     (is (= "Microsoft Corporation." (:producer agent)))
     (is (= :browser (:type agent)))
     (is (= "7.0" (:version agent)))
-    (is (= :pc (:device agent)))))
+    (is (= :pc (:device agent)))
+    (is (= "WINDOWS" (:os-family agent)))
+    (is (= "Windows Vista" (:os-name agent)))
+    (is (= "6.0" (:os-version agent)))))
