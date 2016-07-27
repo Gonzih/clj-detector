@@ -3,8 +3,6 @@
            [net.sf.uadetector UserAgent UserAgentType UserAgentFamily VersionNumber DeviceCategory ReadableDeviceCategory$Category OperatingSystemFamily])
   (:require [clojure.string :as st]))
 
-(defrecord Agent [name producer family type version device os-family os-name os-version])
-
 (defprotocol ToClojure
   (to-clojure [x]))
 
@@ -31,17 +29,16 @@
     (st/join "." (remove st/blank? (.getGroups version))))
   UserAgent
   (to-clojure [agent]
-    #_[name producer family type version device os-family os-name os-version]
     (let [os (.getOperatingSystem agent)]
-      (Agent. (.getName agent)
-              (.getProducer agent)
-              (to-clojure (.getFamily agent))
-              (to-clojure (.getType agent))
-              (to-clojure (.getVersionNumber agent))
-              (to-clojure (.getDeviceCategory agent))
-              (to-clojure (.getFamily os))
-              (.getName os)
-              (to-clojure (.getVersionNumber os)))))
+      {:name (.getName agent)
+       :producer (.getProducer agent)
+       :family (to-clojure (.getFamily agent))
+       :type (to-clojure (.getType agent))
+       :version (to-clojure (.getVersionNumber agent))
+       :device (to-clojure (.getDeviceCategory agent))
+       :os-family (to-clojure (.getFamily os))
+       :os-name (.getName os)
+       :os-version (to-clojure (.getVersionNumber os))}))
   UserAgentType
   (to-clojure [type]
     (condp = type
