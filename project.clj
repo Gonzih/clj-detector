@@ -1,4 +1,4 @@
-(defproject me.gonzih.clj-detector "0.0.3"
+(defproject me.gonzih.clj-detector "0.0.4"
   :description "Clojure interface to UADetector, a library to analyse User-Agent strings"
   :url "http://github.com/pingles/clj-detector"
   :license {:name "Eclipse Public License"
